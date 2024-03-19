@@ -1,0 +1,14 @@
+---
+- name: configure /etc/motd
+  hosts: all
+  gather_facts: true
+  tasks:
+  - name: /etc/motd 삭제
+    file:
+      path: /etc/motd
+      state: absent
+
+  - name: /etc/motd 빈 파일 생성하기
+    file:
+      path: /etc/motd 
+      state: touch 

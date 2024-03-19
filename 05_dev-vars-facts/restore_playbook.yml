@@ -1,0 +1,28 @@
+---
+- name: 웹 서비스 되돌리기
+  hosts: all
+  gather_facts: yes
+  tasks: 
+  - name: 방화벽 내리기
+    firewalld:
+      service: "{{ansible_local.custom.general.fwsvc}}"
+      permanent: yes
+      immediate: yes
+      state: disabled
+
+  - name: 웹서비스 내리기
+    service:
+      name: "{{ansible_local.custom.general.service}}"
+      enabled: no
+      state: stopped
+    ignore_errors: yes
+  
+  - name: 웹 패키지 삭제
+    yum:
+      name:
+        - "{{ansible_local.custom.general.package}}"
+      state: absent
+  - name: /etc/ansible 디렉토리 삭제
+    file:
+      path: /etc/ansible 
+      state: absent

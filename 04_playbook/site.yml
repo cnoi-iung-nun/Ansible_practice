@@ -1,0 +1,48 @@
+---
+#WEB server Configuration
+# 1) install packages
+# yum -y install httpd mod_ssl
+
+# webserver settings
+# scp files/index.html ansible#: /var/www/ytml/index.html
+#web service start up
+# systemctl enable --now httpd
+# Firewall registration
+#firewall-cmd --permanent --add-service={http,https}
+#5) SELINUX(?)
+
+- name: Install and start Apache HTTPD
+  hosts: webservers
+  tasks:
+    - name: httpd package is present
+      ansible.builtin.yum:
+        name: 
+          - httpd
+          - mod_ssl
+        state: present
+
+    - name: Web server settings
+      copy: 
+        src: files/index.html
+        dest: /var/www/html/index.html
+
+    - name: Web service startup
+      service:
+        name: httpd
+        state: started
+        enabled: yes
+
+    - name: Firewall registration - http
+      firewalld:
+        service: http
+        permanent: true
+        immediate: true
+        state: enabled
+
+    - name: Firewall registration - https
+      firewalld:
+        service: https
+        permanent: true
+        immediate: true
+        state: enabled
+        

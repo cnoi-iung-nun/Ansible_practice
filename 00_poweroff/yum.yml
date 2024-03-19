@@ -1,0 +1,6 @@
+- name: install mariadb-server if enough space on root
+  yum:
+    name: mariadb-server
+    state: latest
+  with_items: "{{ ansible_mounts }}"
+  when: item.mount == "/" and item.size_available > 300000000

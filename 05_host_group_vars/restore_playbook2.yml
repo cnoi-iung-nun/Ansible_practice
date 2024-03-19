@@ -1,0 +1,14 @@
+---
+- name: 호스트 또는 그룹 변수 실 습 제거 예
+  hosts: all
+  tasks:
+  - name: unInstall a list of packages with a list variable
+    yum:
+      name: "{{ packages }}"
+      state: absent
+    vars:
+      packages:
+      - mutt
+      - php
+      - httpd
+      - mariadb-server

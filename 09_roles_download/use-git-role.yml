@@ -1,0 +1,12 @@
+---
+- name: 역할설치
+  hosts: webservers
+  # pre_tasks:
+  #   - name: gcc 패키지 설치
+  #     yum:
+  #       name: 
+  #         - gcc
+  #         - make
+  #       state: latest
+  roles:
+  - gano2018.ansible_git

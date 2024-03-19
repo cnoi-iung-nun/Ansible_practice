@@ -1,0 +1,48 @@
+---
+# tasks file for myvhost
+# 작업 내용 정리
+# 1) 웹 페키지 설치
+# 2) 웹 서비스 기동
+# 3) 웹 서버 설정
+# * /etc/httpd/conf.d/vhost.conf (<==vhost.conf.j2)
+# * notfy handler 
+# 4) 방화벽에 서비스 등록 
+- name: 웹 페키지 설치 -httpd,mode_ssl
+  yum:
+    name: "{{pkg_web}}"
+    state: latest
+
+- name: 웹 서버스 기동
+  service:
+    name: "{{item}}"
+    state: started
+    enabled: true
+  with_items: "{{svc_web}}"
+
+- name: 웹 서버 설정 - 가상 호스트 설정
+  template: 
+    src: vhost.conf.j2
+    dest: /etc/httpd/conf.d/vhost.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart_httpd
+
+- name: 웹 디렉토리 생성 - /var/www/vhosts/{{ansible_hostname}}
+  file: 
+    path: "/var/www/vhosts/{{ansible_hostname}}"
+    state: directory
+
+- name: 웹 서버 설정 index.html 생성
+  template:
+    src: index.html.j2
+    dest: "/var/www/vhosts/{{ansible_hostname}}/index.html"
+
+
+- name: 방화벽에 서비스 기동
+  firewalld:
+    service: "{{item}}"
+    permanent: yes
+    immediate: yes
+    state: enabled
+  with_items: "{{fw_svc}}"

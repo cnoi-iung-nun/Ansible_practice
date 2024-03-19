@@ -1,0 +1,13 @@
+packages:
+  - httpd
+  - mod_ssl
+services:
+  - httpd
+  - firewalld
+conf_files:
+  - src: files/index.html
+    dest: /var/www/html/index.html
+  - src: files/localhost.key
+    dest: /etc/pki/tls/certs/localhost.key
+  - src: files/localhost.crt
+    dest: /etc/pki/tls/certs/localhost.crt
